@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.effect.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.navalbattle1.Controller.HelloController"
+            prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: linear-gradient(to bottom, #0a1929, #1a3a52);">
+
+    <center>
+        <VBox alignment="CENTER" spacing="30.0">
+            <padding>
+                <Insets bottom="50.0" left="50.0" right="50.0" top="50.0"/>
+            </padding>
+
+            <!-- Título Principal -->
+            <VBox alignment="CENTER" spacing="10.0">
+                <Label text="⚓ BATALLA NAVAL ⚓" textFill="#FFD700" styleClass="title">
+                    <font>
+                        <Font name="System Bold" size="48.0"/>
+                    </font>
+                    <effect>
+                        <DropShadow color="#000000" radius="10.0" spread="0.5"/>
+                    </effect>
+                </Label>
+                <Label text="Prepárate para el combate" textFill="#87CEEB" styleClass="subtitle">
+                    <font>
+                        <Font name="System Italic" size="18.0"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- Panel de Inicio de Sesión -->
+            <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: rgba(255, 255, 255, 0.1); -fx-background-radius: 15; -fx-border-color: #4A90E2; -fx-border-radius: 15; -fx-border-width: 2;">
+                <padding>
+                    <Insets bottom="40.0" left="60.0" right="60.0" top="40.0"/>
+                </padding>
+
+                <Label text="Ingrese su nombre de comandante:" textFill="#FFFFFF">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                </Label>
+
+                <TextField fx:id="nicknameField" promptText="Ej: Capitán Pérez" prefWidth="300.0"
+                           style="-fx-background-color: #FFFFFF; -fx-background-radius: 5; -fx-font-size: 14; -fx-padding: 10;">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </TextField>
+
+                <Label fx:id="errorLabel" textFill="#FF6B6B" visible="false">
+                    <font>
+                        <Font name="System Italic" size="12.0"/>
+                    </font>
+                </Label>
+
+                <!-- Botones -->
+                <HBox alignment="CENTER" spacing="20.0">
+                    <Button fx:id="newGameButton" text="🎮 Nuevo Juego" onAction="#handleNewGame"
+                            style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 30 12 30; -fx-cursor: hand;"
+                            onMouseEntered="#onButtonHover" onMouseExited="#onButtonExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="5.0"/>
+                        </effect>
+                    </Button>
+
+                    <Button fx:id="loadGameButton" text="📂 Cargar Partida" onAction="#handleLoadGame"
+                            style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 12 30 12 30; -fx-cursor: hand;"
+                            onMouseEntered="#onButtonHover" onMouseExited="#onButtonExit">
+                        <effect>
+                            <DropShadow color="#000000" radius="5.0"/>
+                        </effect>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <!-- Información del Juego -->
+            <VBox alignment="CENTER" spacing="8.0" style="-fx-background-color: rgba(0, 0, 0, 0.3); -fx-background-radius: 10; -fx-padding: 15;">
+                <Label text="📋 Flota Disponible:" textFill="#FFD700">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+                <Label text="1 Portaaviones (4 casillas) • 2 Submarinos (3 casillas)" textFill="#FFFFFF">
+                    <font>
+                        <Font size="12.0"/>
+                    </font>
+                </Label>
+                <Label text="3 Destructores (2 casillas) • 4 Fragatas (1 casilla)" textFill="#FFFFFF">
+                    <font>
+                        <Font size="12.0"/>
+                    </font>
+                </Label>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: rgba(0, 0, 0, 0.3);">
+            <padding>
+                <Insets bottom="15.0" top="15.0"/>
+            </padding>
+            <Label text="FPOE - Fundamentos de Programación Orientada a Eventos - 2025-2" textFill="#B0BEC5">
+                <font>
+                    <Font size="11.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </bottom>
+</BorderPane>
