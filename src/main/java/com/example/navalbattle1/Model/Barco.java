@@ -5,6 +5,7 @@ public class Barco {
     private int tamano;
     private int fila;
     private int columna;
+    private int impactos=0;
     private boolean horizontal;
 
     private Barco(Builder builder) {
@@ -14,7 +15,30 @@ public class Barco {
         this.columna = builder.columna;
         this.horizontal = builder.horizontal;
     }
-
+    public String getNombre() {
+        return nombre;
+    }
+    public int getTamano() {
+        return tamano;
+    }
+    public int getFila() {
+        return fila;
+    }
+    public int getColumna() {
+        return columna;
+    }
+    public boolean isHorizontal() {
+        return horizontal;
+    }
+    public boolean seHunde(){
+        return impactos == tamano;
+    }
+    public void agregarImpacto(){
+        impactos++;
+    }
+    /**
+     * Implementacion del patron de diseño "Builder"
+     */
     public static class Builder {
         private String nombre;
         private int tamano;
