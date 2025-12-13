@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!-- ✅ VERSIÓN OPTIMIZADA - Dimensiones reducidas -->
+<BorderPane prefHeight="550.0" prefWidth="950.0" style="-fx-background-color: #0d1b2a;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.navalbattle1.Controller.ShipPlacementController">
+
+    <!-- Header Compacto -->
+    <top>
+        <VBox style="-fx-background-color: linear-gradient(to right, #1b263b, #415a77);">
+            <HBox alignment="CENTER" spacing="30.0" style="-fx-padding: 8;">
+                <Label text="⚓ COLOCACIÓN DE BARCOS" textFill="#FFD700">
+                    <font><Font name="System Bold" size="18.0" /></font>
+                </Label>
+
+                <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                    <Label fx:id="playerNameLabel" text="Jugador: ---" textFill="#FFFFFF">
+                        <font><Font name="System Bold" size="12.0" /></font>
+                    </Label>
+                    <Label fx:id="shipsPlacedLabel" text="Barcos: 0/10" textFill="#87CEEB">
+                        <font><Font size="10.0" /></font>
+                    </Label>
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.3); -fx-padding: 6;">
+                <Label fx:id="statusLabel" text="🎯 Arrastra los barcos al tablero" textFill="#00FF00">
+                    <font><Font size="12.0" /></font>
+                </Label>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Centro -->
+    <center>
+        <HBox alignment="CENTER" spacing="15.0" style="-fx-padding: 10;">
+
+            <!-- Panel Izquierdo - Compacto -->
+            <VBox alignment="TOP_CENTER" prefWidth="170.0" spacing="8.0" style="-fx-background-color: rgba(26, 58, 82, 0.7); -fx-background-radius: 10; -fx-padding: 10;">
+
+                <Label text="🚢 FLOTA" textFill="#87CEEB">
+                    <font><Font name="System Bold" size="13.0" /></font>
+                </Label>
+
+                <VBox fx:id="availableShipsContainer" spacing="6.0" style="-fx-padding: 3;">
+                    <!-- Barcos dinámicos -->
+                </VBox>
+
+                <VBox spacing="5.0" style="-fx-background-color: rgba(0,0,0,0.4); -fx-padding: 8; -fx-background-radius: 6;">
+                    <Label text="📋 Inventario" textFill="#FFD700">
+                        <font><Font name="System Bold" size="10.0" /></font>
+                    </Label>
+                    <VBox spacing="2.0">
+                        <Label fx:id="carrierCountLabel" text="🚢 Portaaviones: 1" textFill="#FFFFFF">
+                            <font><Font size="9.0" /></font>
+                        </Label>
+                        <Label fx:id="submarineCountLabel" text="🔱 Submarinos: 2" textFill="#FFFFFF">
+                            <font><Font size="9.0" /></font>
+                        </Label>
+                        <Label fx:id="destroyerCountLabel" text="⚓ Destructores: 3" textFill="#FFFFFF">
+                            <font><Font size="9.0" /></font>
+                        </Label>
+                        <Label fx:id="frigateCountLabel" text="⛵ Fragatas: 4" textFill="#FFFFFF">
+                            <font><Font size="9.0" /></font>
+                        </Label>
+                    </VBox>
+                </VBox>
+
+                <Button fx:id="rotateButton" onAction="#handleRotateShip" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 12 6 12; -fx-cursor: hand;" text="🔄 Rotar">
+                    <font><Font name="System Bold" size="11.0" /></font>
+                </Button>
+
+                <Label fx:id="orientationLabel" text="➡️ Horizontal" textFill="#87CEEB">
+                    <font><Font size="10.0" /></font>
+                </Label>
+            </VBox>
+
+            <!-- Panel Central - Tablero ✅ REDUCIDO -->
+            <VBox alignment="TOP_CENTER" spacing="8.0" style="-fx-background-color: rgba(26, 58, 82, 0.5); -fx-background-radius: 10; -fx-padding: 12;">
+
+                <Label text="🛡️ TU TABLERO" textFill="#87CEEB">
+                    <font><Font name="System Bold" size="14.0" /></font>
+                </Label>
+
+                <!-- ✅ Tablero 10x10 OPTIMIZADO -->
+                <GridPane fx:id="placementBoard" gridLinesVisible="false" prefHeight="350.0" prefWidth="350.0" style="-fx-background-color: #1e293b; -fx-border-color: #1e293b; -fx-border-width: 2;">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="35.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                </GridPane>
+
+                <!-- Leyenda compacta -->
+                <HBox spacing="12.0" style="-fx-background-color: rgba(0,0,0,0.4); -fx-padding: 6; -fx-background-radius: 5;">
+                    <Label text="💧 Agua" textFill="#60a5fa"><font><Font size="9.0" /></font></Label>
+                    <Label text="✅ Válido" textFill="#86efac"><font><Font size="9.0" /></font></Label>
+                    <Label text="❌ Inválido" textFill="#fca5a5"><font><Font size="9.0" /></font></Label>
+                    <Label text="🚢 Colocado" textFill="#FFFFFF"><font><Font size="9.0" /></font></Label>
+                </HBox>
+            </VBox>
+
+            <!-- Panel Derecho - Compacto -->
+            <VBox alignment="TOP_CENTER" prefWidth="170.0" spacing="8.0" style="-fx-background-color: rgba(65, 90, 119, 0.5); -fx-background-radius: 10; -fx-padding: 10;">
+
+                <Label text="💡 GUÍA" textFill="#FFD700">
+                    <font><Font name="System Bold" size="12.0" /></font>
+                </Label>
+
+                <VBox spacing="5.0" style="-fx-background-color: rgba(0,0,0,0.3); -fx-padding: 8; -fx-background-radius: 6;">
+                    <Label text="1Selecciona un barco" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="9.0" /></font>
+                    </Label>
+                    <Label text="2Rota con 🔄" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="9.0" /></font>
+                    </Label>
+                    <Label text="3Arrastra al tablero" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="9.0" /></font>
+                    </Label>
+                    <Label text="4Verde ✅ = válido" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="9.0" /></font>
+                    </Label>
+                    <Label text="5Clic derecho = quitar" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="9.0" /></font>
+                    </Label>
+                </VBox>
+
+                <!-- Vista previa -->
+                <VBox spacing="5.0" style="-fx-background-color: rgba(0,0,0,0.4); -fx-padding: 6; -fx-background-radius: 6;">
+                    <Label text="👁️ Seleccionado:" textFill="#FFD700">
+                        <font><Font name="System Bold" size="9.0" /></font>
+                    </Label>
+                    <Label fx:id="selectedShipLabel" text="Ninguno" textFill="#FFFFFF">
+                        <font><Font name="System Bold" size="10.0" /></font>
+                    </Label>
+                    <VBox fx:id="shipPreviewContainer" alignment="CENTER" prefHeight="60.0" style="-fx-background-color: #60a5fa; -fx-border-color: #1e293b; -fx-border-width: 2; -fx-background-radius: 4;">
+                    </VBox>
+                </VBox>
+
+                <!-- Reglas -->
+                <VBox spacing="4.0" style="-fx-background-color: rgba(220, 53, 69, 0.2); -fx-padding: 6; -fx-background-radius: 6; -fx-border-color: #dc3545; -fx-border-width: 1.5;">
+                    <Label text="⚠️ Reglas:" textFill="#FF6B6B">
+                        <font><Font name="System Bold" size="9.0" /></font>
+                    </Label>
+                    <Label text="• No superponer barcos" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="8.0" /></font>
+                    </Label>
+                    <Label text="• No salir del tablero" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="8.0" /></font>
+                    </Label>
+                    <Label text="• No mover después" textFill="#FFFFFF" wrapText="true">
+                        <font><Font size="8.0" /></font>
+                    </Label>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- Footer Compacto -->
+    <bottom>
+        <VBox style="-fx-background-color: #1b263b;">
+            <!-- Progreso -->
+            <HBox alignment="CENTER" spacing="15.0" style="-fx-padding: 8; -fx-background-color: rgba(0,0,0,0.3);">
+                <Label text="📈 Progreso:" textFill="#FFD700">
+                    <font><Font name="System Bold" size="11.0" /></font>
+                </Label>
+                <Label fx:id="progressLabel" text="0 / 10" textFill="#87CEEB">
+                    <font><Font name="System Bold" size="11.0" /></font>
+                </Label>
+            </HBox>
+
+            <!-- Botones -->
+            <HBox alignment="CENTER" spacing="12.0" style="-fx-padding: 10;">
+                <Button fx:id="randomPlacementButton" onAction="#handleRandomPlacement" style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 12 6 12; -fx-cursor: hand;" text="🎲 Aleatorio">
+                </Button>
+
+                <Button fx:id="clearBoardButton" onAction="#handleClearBoard" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 12 6 12; -fx-cursor: hand;" text="🗑️ Limpiar">
+                </Button>
+
+                <Button fx:id="startGameButton" disable="true" onAction="#handleStartGame" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 20 8 20; -fx-cursor: hand;" text="▶️ INICIAR">
+                </Button>
+
+                <Button fx:id="cancelButton" onAction="#handleCancel" style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 11; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 6 12 6 12; -fx-cursor: hand;" text="↩️ Volver">
+                </Button>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

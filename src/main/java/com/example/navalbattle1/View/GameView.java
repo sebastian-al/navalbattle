@@ -20,7 +20,7 @@ public class GameView extends Stage {
         this.gameController = fxmlLoader.getController();
         Scene scene = new Scene(root);
         this.setScene(scene);
-        this.setTitle("Craps Game");
+        this.setTitle("batalla naval");
 //        this.getIcons().add(new Image(
 //                getClass().getResourceAsStream("/com/example/crapsgame02/images/favicon.png")
 //        ));
