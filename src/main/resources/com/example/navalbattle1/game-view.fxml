@@ -5,180 +5,129 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.navalbattle1.Controller.GameController"
-            prefHeight="800.0" prefWidth="1400.0" style="-fx-background-color: #0d1b2a;">
+            prefHeight="800.0" prefWidth="1400.0"
+            style="-fx-background-color: #0d1b2a;">
 
-    <!-- Header -->
+    <!-- ================= HEADER ================= -->
     <top>
         <VBox style="-fx-background-color: linear-gradient(to right, #1b263b, #415a77);">
-            <HBox alignment="CENTER" spacing="50.0" style="-fx-padding: 20;">
-                <!-- Título -->
-                <HBox alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
+            <HBox alignment="CENTER" spacing="50" style="-fx-padding: 20;">
+                <HBox alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
                     <Label text="⚓" textFill="#FFD700">
-                        <font>
-                            <Font size="32.0"/>
-                        </font>
+                        <font><Font size="32"/></font>
                     </Label>
-                    <Label text="BATALLA NAVAL" textFill="#FFD700" styleClass="game-title">
-                        <font>
-                            <Font name="System Bold" size="28.0"/>
-                        </font>
+                    <Label text="BATALLA NAVAL" textFill="#FFD700">
+                        <font><Font name="System Bold" size="28"/></font>
                     </Label>
                 </HBox>
 
-                <!-- Información del Jugador -->
-                <VBox alignment="CENTER_RIGHT" spacing="5.0">
-                    <Label fx:id="playerNameLabel" text="Jugador: ---" textFill="#FFFFFF">
-                        <font>
-                            <Font name="System Bold" size="16.0"/>
-                        </font>
+                <VBox alignment="CENTER_RIGHT" spacing="5">
+                    <Label fx:id="playerNameLabel" text="Jugador: ---" textFill="WHITE">
+                        <font><Font name="System Bold" size="16"/></font>
                     </Label>
-                    <Label fx:id="playerScoreLabel" text="Barcos hundidos: 0/10" textFill="#87CEEB">
-                        <font>
-                            <Font size="14.0"/>
-                        </font>
-                    </Label>
+                    <Label text="Barcos hundidos: 0/10" textFill="#87CEEB"/>
                 </VBox>
 
-                <!-- Información de la Máquina -->
-                <VBox alignment="CENTER_RIGHT" spacing="5.0">
-                    <Label text="Oponente: Computadora" textFill="#FFFFFF">
-                        <font>
-                            <Font name="System Bold" size="16.0"/>
-                        </font>
+                <VBox alignment="CENTER_RIGHT" spacing="5">
+                    <Label text="Oponente: Computadora" textFill="WHITE">
+                        <font><Font name="System Bold" size="16"/></font>
                     </Label>
-                    <Label fx:id="computerScoreLabel" text="Barcos hundidos: 0/10" textFill="#FF6B6B">
-                        <font>
-                            <Font size="14.0"/>
-                        </font>
-                    </Label>
+                    <Label text="Barcos hundidos: 0/10" textFill="#FF6B6B"/>
                 </VBox>
             </HBox>
 
-            <!-- Barra de estado -->
             <HBox alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.3); -fx-padding: 10;">
-                <Label fx:id="turnLabel" text="🎯 ES TU TURNO - Selecciona una casilla para disparar" textFill="#00FF00">
-                    <font>
-                        <Font name="System Bold" size="16.0"/>
-                    </font>
+                <Label fx:id="turnLabel" text="🎯 Turno del jugador" textFill="#00FF00">
+                    <font><Font name="System Bold" size="16"/></font>
                 </Label>
             </HBox>
         </VBox>
     </top>
 
-    <!-- Centro - Tableros -->
+    <!-- ================= CENTRO ================= -->
     <center>
-        <HBox alignment="CENTER" spacing="40.0" style="-fx-padding: 30;">
+        <HBox alignment="CENTER" spacing="40" style="-fx-padding: 30;">
 
-            <!-- Panel Izquierdo - Tablero de Posición del Jugador -->
-            <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: rgba(26, 58, 82, 0.5); -fx-background-radius: 15; -fx-padding: 20;">
+            <!-- ===== TABLERO JUGADOR ===== -->
+            <VBox alignment="TOP_CENTER" spacing="15"
+                  style="-fx-background-color: rgba(26, 58, 82, 0.5);
+                         -fx-background-radius: 15;
+                         -fx-padding: 20;">
+
                 <Label text="🛡️ TU TERRITORIO" textFill="#87CEEB">
-                    <font>
-                        <Font name="System Bold" size="20.0"/>
-                    </font>
+                    <font><Font name="System Bold" size="20"/></font>
                 </Label>
                 <Label text="(Solo observación)" textFill="#B0BEC5">
-                    <font>
-                        <Font name="System Italic" size="12.0"/>
-                    </font>
+                    <font><Font name="System Italic" size="12"/></font>
                 </Label>
 
-                <!-- Grid del Tablero de Posición -->
-                <GridPane fx:id="positionBoardGrid" hgap="2.0" vgap="2.0"
-                          style="-fx-background-color: #000000; -fx-padding: 5;">
-                    <!-- Las celdas se crearán dinámicamente en el controlador -->
-                </GridPane>
+                <!-- STACKPANE = CAPAS -->
+                <StackPane prefWidth="360" prefHeight="360"
+                           alignment="TOP_LEFT">
 
-                <!-- Leyenda -->
-                <VBox spacing="8.0" style="-fx-background-color: rgba(0,0,0,0.4); -fx-padding: 10; -fx-background-radius: 8;">
-                    <Label text="📊 Leyenda:" textFill="#FFD700">
-                        <font>
-                            <Font name="System Bold" size="12.0"/>
-                        </font>
-                    </Label>
-                    <HBox spacing="15.0">
-                        <Label text="🚢 Barco" textFill="#FFFFFF"/>
-                        <Label text="❌ Agua" textFill="#4FC3F7"/>
-                        <Label text="💥 Tocado" textFill="#FFA726"/>
-                        <Label text="💀 Hundido" textFill="#EF5350"/>
-                    </HBox>
-                </VBox>
+                <!-- Grid (agua + disparos) -->
+                    <GridPane fx:id="positionBoardGrid"
+                              hgap="2" vgap="2"
+                              prefWidth="360" prefHeight="360"
+                              style="-fx-background-color: black; -fx-padding: 5;"/>
+
+                    <!-- Capa de barcos 2D -->
+                    <Pane fx:id="playerShipsLayer"
+                          pickOnBounds="false"/>
+                </StackPane>
             </VBox>
 
-            <!-- Panel Derecho - Tablero Principal (Enemigo) -->
-            <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: rgba(82, 26, 26, 0.5); -fx-background-radius: 15; -fx-padding: 20;">
+            <!-- ===== TABLERO ENEMIGO ===== -->
+            <VBox alignment="TOP_CENTER" spacing="15"
+                  style="-fx-background-color: rgba(82, 26, 26, 0.5);
+                         -fx-background-radius: 15;
+                         -fx-padding: 20;">
+
                 <Label text="🎯 TERRITORIO ENEMIGO" textFill="#FF6B6B">
-                    <font>
-                        <Font name="System Bold" size="20.0"/>
-                    </font>
+                    <font><Font name="System Bold" size="20"/></font>
                 </Label>
                 <Label text="(Haz clic para disparar)" textFill="#B0BEC5">
+                    <font><Font name="System Italic" size="12"/></font>
+                </Label>
+
+                <GridPane fx:id="mainBoardGrid"
+                          hgap="2" vgap="2"
+                          prefWidth="360" prefHeight="360"
+                          style="-fx-background-color: black; -fx-padding: 5;"/>
+            </VBox>
+
+            <!-- (LABEL NUEVO CON INFORMACIÓN DEL ENEMIGO) -->
+            <VBox alignment="TOP_CENTER"
+                  spacing="10"
+                  prefWidth="180"
+                  style="-fx-background-color: rgba(255,255,255,0.05);
+                 -fx-background-radius: 12;
+                 -fx-padding: 15;">
+
+                <Label fx:id="enemyInfoLabel"
+                       text="Información del enemigo"
+                       textFill="#D0D0D0"
+                       wrapText="true"
+                       textAlignment="CENTER">
                     <font>
-                        <Font name="System Italic" size="12.0"/>
+                        <Font size="14"/>
                     </font>
                 </Label>
 
-                <!-- Grid del Tablero Principal -->
-                <GridPane fx:id="mainBoardGrid" hgap="2.0" vgap="2.0"
-                          style="-fx-background-color: #000000; -fx-padding: 5;">
-                    <!-- Las celdas se crearán dinámicamente en el controlador -->
-                </GridPane>
-
-                <!-- Estadísticas -->
-                <VBox spacing="8.0" style="-fx-background-color: rgba(0,0,0,0.4); -fx-padding: 10; -fx-background-radius: 8;">
-                    <Label text="📈 Estadísticas de disparos:" textFill="#FFD700">
-                        <font>
-                            <Font name="System Bold" size="12.0"/>
-                        </font>
-                    </Label>
-                    <HBox spacing="20.0">
-                        <Label fx:id="shotsLabel" text="Total: 0" textFill="#FFFFFF"/>
-                        <Label fx:id="hitsLabel" text="Aciertos: 0" textFill="#4CAF50"/>
-                        <Label fx:id="missesLabel" text="Fallos: 0" textFill="#2196F3"/>
-                    </HBox>
-                </VBox>
             </VBox>
         </HBox>
     </center>
 
-    <!-- Panel Inferior - Controles -->
+    <!-- ================= FOOTER ================= -->
     <bottom>
         <VBox style="-fx-background-color: #1b263b;">
-            <!-- Barcos Restantes -->
-            <HBox alignment="CENTER" spacing="30.0" style="-fx-padding: 15; -fx-background-color: rgba(0,0,0,0.3);">
-                <VBox alignment="CENTER" spacing="5.0">
-                    <Label text="🚢 Flota Enemiga Restante:" textFill="#FFD700">
-                        <font>
-                            <Font name="System Bold" size="14.0"/>
-                        </font>
-                    </Label>
-                    <HBox spacing="15.0" alignment="CENTER">
-                        <Label fx:id="carrierLabel" text="Portaaviones: 1" textFill="#FFFFFF"/>
-                        <Label fx:id="submarineLabel" text="Submarinos: 2" textFill="#FFFFFF"/>
-                        <Label fx:id="destroyerLabel" text="Destructores: 3" textFill="#FFFFFF"/>
-                        <Label fx:id="frigateLabel" text="Fragatas: 4" textFill="#FFFFFF"/>
-                    </HBox>
-                </VBox>
-            </HBox>
-
-            <!-- Botones de Control -->
-            <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 15;">
-                <Button fx:id="showEnemyBoardButton" text="👁️ Ver Tablero Enemigo (Debug)"
-                        onAction="#handleShowEnemyBoard"
-                        style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20 10 20; -fx-cursor: hand;"/>
-
-                <Button fx:id="saveGameButton" text="💾 Guardar Partida"
-                        onAction="#handleSaveGame"
-                        style="-fx-background-color: #17a2b8; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20 10 20; -fx-cursor: hand;"/>
-
-                <Button fx:id="newGameButton" text="🔄 Nueva Partida"
-                        onAction="#handleNewGame"
-                        style="-fx-background-color: #ffc107; -fx-text-fill: black; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20 10 20; -fx-cursor: hand;"/>
+            <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
 
                 <Button fx:id="exitButton" text="🚪 Salir"
-                        onAction="#handleExit"
-                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20 10 20; -fx-cursor: hand;"/>
+                        onAction="#handleExit"/>
             </HBox>
         </VBox>
     </bottom>
