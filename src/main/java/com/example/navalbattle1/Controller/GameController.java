@@ -1,13 +1,13 @@
 package com.example.navalbattle1.Controller;
 
 import com.example.navalbattle1.Model.Player;
+import com.example.navalbattle1.Model.Tablero;
+import com.example.navalbattle1.Model.Barco;
 import com.example.navalbattle1.View.BoardCell;
 import com.example.navalbattle1.View.ShipView;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -21,12 +21,13 @@ public class GameController implements Initializable {
 
     private static final int BOARD_SIZE = 10;
     private static final int CELL_SIZE = BoardCell.SIZE;
-    private static final int GAP = 2;          // hgap / vgap del GridPane
-    private static final int GRID_PADDING = 5; // padding definido en el FXML
+    private static final int GAP = 2;
+    private static final int GRID_PADDING = 5;
 
     /* ===================== MODELO ===================== */
 
     private Player player;
+    private Tablero playerFinalBoard; // viene desde Setup
 
     /* ===================== UI ===================== */
 
@@ -37,26 +38,13 @@ public class GameController implements Initializable {
     private Label turnLabel;
 
     @FXML
-    private GridPane positionBoardGrid; // Tablero jugador humano
+    private GridPane positionBoardGrid; // tablero jugador (solo visual)
 
     @FXML
-    private GridPane mainBoardGrid; // Tablero máquina
+    private GridPane mainBoardGrid; // tablero enemigo
 
     @FXML
-    private Button newGameButton;
-
-    @FXML
-    private Button saveGameButton;
-
-    @FXML
-    private Button showEnemyBoardButton;
-
-    @FXML
-    private Button exitButton;
-
-    /* ===== Capa de barcos 2D ===== */
-    @FXML
-    private Pane playerShipsLayer;
+    private Pane playerShipsLayer; // capa barcos 2D (bloqueada)
 
     /* ===================== MATRICES VISUALES ===================== */
 
@@ -68,13 +56,23 @@ public class GameController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         createBoards();
-        drawPlayerShips();
         turnLabel.setText("🎯 Turno del jugador");
+    }
+
+    /* ===================== INYECCIÓN DESDE SETUP ===================== */
+
+    /**
+     * Llamado desde SetupController
+     */
+    public void setInitialBoard(Tablero tablero) {
+        this.playerFinalBoard = tablero;
+        drawFinalPlayerShips();
     }
 
     /* ===================== CREACIÓN DE TABLEROS ===================== */
 
     private void createBoards() {
+
         playerBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         enemyBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
 
@@ -84,13 +82,13 @@ public class GameController implements Initializable {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
 
-                // Tablero del jugador humano
+                // === Tablero del jugador (solo observación) ===
                 BoardCell playerCell = new BoardCell(row, col);
                 playerCell.setWater();
                 playerBoard[row][col] = playerCell;
                 positionBoardGrid.add(playerCell, col, row);
 
-                // Tablero de la máquina
+                // === Tablero enemigo (clickeable) ===
                 BoardCell enemyCell = new BoardCell(row, col);
                 enemyCell.setWater();
                 enemyCell.setOnMouseClicked(e -> handleEnemyShot(enemyCell));
@@ -100,50 +98,30 @@ public class GameController implements Initializable {
         }
     }
 
-    /* ===================== BARCOS DEL JUGADOR (VISTA 2D) ===================== */
+    /* ===================== DIBUJO DE BARCOS DESDE SETUP ===================== */
 
-    private void drawPlayerShips() {
+    private void drawFinalPlayerShips() {
+
+        if (playerFinalBoard == null) return;
 
         playerShipsLayer.getChildren().clear();
 
-        /* 🚢 Portaaviones (4 casillas - horizontal) */
-        ShipView carrier = new ShipView(
-                ShipView.Type.CARRIER,
-                ShipView.Orientation.HORIZONTAL
-        );
-        placeShip(carrier, 1, 1);
-        playerShipsLayer.getChildren().add(carrier);
+        for (Barco barco : playerFinalBoard.getBarcos()) {
 
-        /* 🛥️ Submarino (3 casillas - vertical) */
-        ShipView submarine = new ShipView(
-                ShipView.Type.SUBMARINE,
-                ShipView.Orientation.VERTICAL
-        );
-        placeShip(submarine, 5, 3);
-        playerShipsLayer.getChildren().add(submarine);
+            ShipView shipView = new ShipView(
+                    ShipView.Type.fromSize(barco.getTamano()),
+                    barco.isHorizontal()
+                            ? ShipView.Orientation.HORIZONTAL
+                            : ShipView.Orientation.VERTICAL
+            );
 
-        /* 🚤 Destructor (2 casillas - horizontal) */
-        ShipView destroyer = new ShipView(
-                ShipView.Type.DESTROYER,
-                ShipView.Orientation.HORIZONTAL
-        );
-        placeShip(destroyer, 2, 6);
-        playerShipsLayer.getChildren().add(destroyer);
-
-        /* ⛴️ Fragata (1 casilla) */
-        ShipView frigate = new ShipView(
-                ShipView.Type.FRIGATE,
-                ShipView.Orientation.HORIZONTAL
-        );
-        placeShip(frigate, 8, 8);
-        playerShipsLayer.getChildren().add(frigate);
+            placeShip(shipView, barco.getColumna(), barco.getFila());
+            playerShipsLayer.getChildren().add(shipView);
+        }
     }
 
     /* ===================== POSICIONAMIENTO EXACTO ===================== */
 
-    /**
-     * Coloca un barco alineado exactamente a la celda (fila, columna)
-     */
     private void placeShip(ShipView ship, int col, int row) {
 
         double x = GRID_PADDING + col * (CELL_SIZE + GAP);
@@ -153,24 +131,27 @@ public class GameController implements Initializable {
         ship.setLayoutY(y);
     }
 
-    /* ===================== EVENTOS DE BOTONES ===================== */
+    /* ===================== DISPAROS AL ENEMIGO ===================== */
 
-    @FXML
-    void handleNewGame(ActionEvent event) {
-        createBoards();
-        drawPlayerShips();
-        turnLabel.setText("🎯 Turno del jugador");
+    private void handleEnemyShot(BoardCell cell) {
+
+        if (cell.isShot()) return;
+
+        double random = Math.random();
+
+        if (random < 0.6) {
+            cell.setMiss(); // ❌
+            turnLabel.setText("❌ Agua — turno de la máquina");
+        } else if (random < 0.85) {
+            cell.setHit(); // 💣
+            turnLabel.setText("💣 Tocado — dispara de nuevo");
+        } else {
+            cell.setSunk(); // 🔥
+            turnLabel.setText("🔥 Hundido — dispara de nuevo");
+        }
     }
 
-    @FXML
-    void handleSaveGame(ActionEvent event) {
-        System.out.println("Guardar partida (pendiente)");
-    }
-
-    @FXML
-    void handleShowEnemyBoard(ActionEvent event) {
-        System.out.println("Modo debug: mostrar tablero enemigo");
-    }
+    /* ===================== BOTÓN SALIR ===================== */
 
     @FXML
     void handleExit(ActionEvent event) {
@@ -183,26 +164,4 @@ public class GameController implements Initializable {
         this.player = player;
         playerNameLabel.setText("Jugador: " + player.getNickname());
     }
-
-    private void handleEnemyShot(BoardCell cell) {
-
-        // Evitar disparar dos veces
-        if (!cell.getChildren().isEmpty()) {
-            return;
-        }
-
-        double random = Math.random();
-
-        if (random < 0.6) {
-            cell.setMiss();      // ❌ Agua
-            turnLabel.setText("❌ Agua — turno de la máquina");
-        } else if (random < 0.85) {
-            cell.setHit();       // 💣 Tocado
-            turnLabel.setText("💣 Tocado — dispara de nuevo");
-        } else {
-            cell.setSunk();      // 🔥 Hundido
-            turnLabel.setText("🔥 Hundido — dispara de nuevo");
-        }
-    }
-
 }
