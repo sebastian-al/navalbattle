@@ -20,7 +20,4 @@ public class JugadorHumano implements Jugador {
         this.nombre = auxNombre;
     }
 
-    public void agregarSubmarino(Tablero tablero, Posicion posicion) {
-        Barco barco = new Barco.Builder("Submarino", 4).fila(4).columna(4).build();
-    }
 }
