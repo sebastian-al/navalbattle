@@ -141,9 +141,17 @@
 
             <!-- CONTINUAR -->
             <Button fx:id="continueButton"
-                    text="➡ Ir al tablero enemigo"
+                    text="Que empiece la batalla!"
                     onAction="#handleContinue"
                     disable="true"/>
+
+            <!-- FLOTA ENEMIGA -->
+            <Button fx:id="enemyFleetButton"
+                    text="Flota Enemiga"
+                    onAction="#openEnemyFleet"
+                    focusTraversable="false"/>
+
+
         </HBox>
     </bottom>
 
