@@ -55,7 +55,8 @@
             <VBox alignment="TOP_CENTER" spacing="15"
                   style="-fx-background-color: rgba(26, 58, 82, 0.5);
                          -fx-background-radius: 15;
-                         -fx-padding: 20;">
+                         -fx-padding: 20;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 15, 0, 0, 0);">
 
                 <Label text="🛡️ TU TERRITORIO" textFill="#87CEEB">
                     <font><Font name="System Bold" size="20"/></font>
@@ -66,17 +67,25 @@
 
                 <!-- STACKPANE = CAPAS -->
                 <StackPane prefWidth="360" prefHeight="360"
-                           alignment="TOP_LEFT">
+                           alignment="TOP_LEFT"
+                           style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);">
 
-                <!-- Grid (agua + disparos) -->
+                    <!-- Grid (agua + disparos) -->
                     <GridPane fx:id="positionBoardGrid"
                               hgap="2" vgap="2"
                               prefWidth="360" prefHeight="360"
-                              style="-fx-background-color: black; -fx-padding: 5;"/>
+                              style="-fx-background-color: #001f3f;
+                                     -fx-padding: 5;
+                                     -fx-border-color: #87CEEB;
+                                     -fx-border-width: 3;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;"/>
 
-                    <!-- Capa de barcos 2D -->
+                    <!-- Capa de barcos 2D del jugador -->
                     <Pane fx:id="playerShipsLayer"
-                          pickOnBounds="false"/>
+                          mouseTransparent="true"
+                          pickOnBounds="false"
+                          style="-fx-padding: 5;"/>
                 </StackPane>
             </VBox>
 
@@ -84,7 +93,8 @@
             <VBox alignment="TOP_CENTER" spacing="15"
                   style="-fx-background-color: rgba(82, 26, 26, 0.5);
                          -fx-background-radius: 15;
-                         -fx-padding: 20;">
+                         -fx-padding: 20;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 15, 0, 0, 0);">
 
                 <Label text="🎯 TERRITORIO ENEMIGO" textFill="#FF6B6B">
                     <font><Font name="System Bold" size="20"/></font>
@@ -93,30 +103,122 @@
                     <font><Font name="System Italic" size="12"/></font>
                 </Label>
 
-                <GridPane fx:id="mainBoardGrid"
-                          hgap="2" vgap="2"
-                          prefWidth="360" prefHeight="360"
-                          style="-fx-background-color: black; -fx-padding: 5;"/>
+                <!-- STACKPANE para tablero enemigo con capas -->
+                <StackPane prefWidth="360" prefHeight="360"
+                           alignment="TOP_LEFT"
+                           style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 5);">
+
+                    <!-- Grid enemigo (agua + disparos) -->
+                    <GridPane fx:id="mainBoardGrid"
+                              hgap="2" vgap="2"
+                              prefWidth="360" prefHeight="360"
+                              style="-fx-background-color: #3d0a0a;
+                                     -fx-padding: 5;
+                                     -fx-border-color: #FF6B6B;
+                                     -fx-border-width: 3;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;"/>
+
+                    <!-- Capa de barcos 2D enemigos (inicialmente oculta) -->
+                    <Pane fx:id="enemyShipsLayer"
+                          mouseTransparent="true"
+                          pickOnBounds="false"
+                          visible="false"
+                          style="-fx-padding: 5;"/>
+                </StackPane>
             </VBox>
 
-            <!-- (LABEL NUEVO CON INFORMACIÓN DEL ENEMIGO) -->
+            <!-- ===== PANEL DE INFORMACIÓN Y CONTROLES ===== -->
             <VBox alignment="TOP_CENTER"
-                  spacing="10"
-                  prefWidth="180"
+                  spacing="15"
+                  prefWidth="220"
                   style="-fx-background-color: rgba(255,255,255,0.05);
-                 -fx-background-radius: 12;
-                 -fx-padding: 15;">
+                         -fx-background-radius: 12;
+                         -fx-padding: 20;
+                         -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);">
 
-                <Label fx:id="enemyInfoLabel"
-                       text="Información del enemigo"
-                       textFill="#D0D0D0"
-                       wrapText="true"
-                       textAlignment="CENTER">
-                    <font>
-                        <Font size="14"/>
-                    </font>
+                <!-- TÍTULO -->
+                <Label text="🎮 Controles"
+                       textFill="#FFD700"
+                       style="-fx-font-weight: bold;">
+                    <font><Font size="18"/></font>
                 </Label>
 
+                <Separator style="-fx-background-color: rgba(255,255,255,0.2);"/>
+
+                <!-- BOTÓN MOSTRAR/OCULTAR BARCOS ENEMIGOS -->
+                <Button fx:id="toggleEnemyShipsButton"
+                        text="👁️ Ver barcos enemigos"
+                        onAction="#handleToggleEnemyShips"
+                        prefWidth="180"
+                        prefHeight="50"
+                        wrapText="true"
+                        style="-fx-background-color: linear-gradient(to bottom, #9B59B6, #8E44AD);
+                               -fx-text-fill: white;
+                               -fx-font-size: 13;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 10;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(three-pass-box, rgba(155,89,182,0.4), 8, 0, 0, 3);"/>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.2);"/>
+
+                <!-- INFORMACIÓN DEL ESTADO -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label text="📊 Estado del juego"
+                           textFill="#87CEEB"
+                           style="-fx-font-weight: bold;">
+                        <font><Font size="14"/></font>
+                    </Label>
+
+                    <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 8;">
+                        <Label text="Tus barcos:" textFill="#B0BEC5">
+                            <font><Font size="12"/></font>
+                        </Label>
+                        <Label text="✅ Intactos: 10" textFill="#00FF00">
+                            <font><Font size="11"/></font>
+                        </Label>
+                        <Label text="❌ Hundidos: 0" textFill="#FF6B6B">
+                            <font><Font size="11"/></font>
+                        </Label>
+                    </VBox>
+
+                    <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: rgba(0,0,0,0.3); -fx-background-radius: 8;">
+                        <Label text="Barcos enemigos:" textFill="#B0BEC5">
+                            <font><Font size="12"/></font>
+                        </Label>
+                        <Label text="✅ Intactos: 10" textFill="#00FF00">
+                            <font><Font size="11"/></font>
+                        </Label>
+                        <Label text="❌ Hundidos: 0" textFill="#FF6B6B">
+                            <font><Font size="11"/></font>
+                        </Label>
+                    </VBox>
+                </VBox>
+
+                <Separator style="-fx-background-color: rgba(255,255,255,0.2);"/>
+
+                <!-- ESTADÍSTICAS -->
+                <VBox spacing="8" alignment="CENTER">
+                    <Label text="📈 Estadísticas"
+                           textFill="#FFD700"
+                           style="-fx-font-weight: bold;">
+                        <font><Font size="14"/></font>
+                    </Label>
+
+                    <Label text="🎯 Disparos: 0" textFill="#D0D0D0">
+                        <font><Font size="11"/></font>
+                    </Label>
+                    <Label text="💣 Impactos: 0" textFill="#D0D0D0">
+                        <font><Font size="11"/></font>
+                    </Label>
+                    <Label text="❌ Fallos: 0" textFill="#D0D0D0">
+                        <font><Font size="11"/></font>
+                    </Label>
+                    <Label text="🎯 Precisión: 0%" textFill="#D0D0D0">
+                        <font><Font size="11"/></font>
+                    </Label>
+                </VBox>
             </VBox>
         </HBox>
     </center>
@@ -126,8 +228,29 @@
         <VBox style="-fx-background-color: #1b263b;">
             <HBox alignment="CENTER" spacing="20" style="-fx-padding: 15;">
 
-                <Button fx:id="exitButton" text="🚪 Salir"
-                        onAction="#handleExit"/>
+                <!-- BOTÓN SALIR -->
+                <Button fx:id="exitButton"
+                        text="🚪 Salir del juego"
+                        onAction="#handleExit"
+                        style="-fx-background-color: #C0392B;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10 30;
+                               -fx-background-radius: 8;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(three-pass-box, rgba(192,57,43,0.4), 5, 0, 0, 2);"/>
+
+                <!-- BOTÓN REINICIAR (opcional) -->
+                <Button text="🔄 Nueva partida"
+                        style="-fx-background-color: #27AE60;
+                               -fx-text-fill: white;
+                               -fx-font-size: 14;
+                               -fx-font-weight: bold;
+                               -fx-padding: 10 30;
+                               -fx-background-radius: 8;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(three-pass-box, rgba(39,174,96,0.4), 5, 0, 0, 2);"/>
             </HBox>
         </VBox>
     </bottom>
