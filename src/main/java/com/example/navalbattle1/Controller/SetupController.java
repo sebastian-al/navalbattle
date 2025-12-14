@@ -1,6 +1,6 @@
 package com.example.navalbattle1.Controller;
 
-import com.example.navalbattle1.Model.Player;
+import com.example.navalbattle1.Model.JugadorHumano;
 import com.example.navalbattle1.Model.SetupModel;
 import com.example.navalbattle1.Model.SetupModel.ShipType;
 import com.example.navalbattle1.View.BoardCell;
@@ -50,9 +50,14 @@ public class SetupController implements Initializable {
     /* ===================== MODELO ===================== */
 
     private final SetupModel model = new SetupModel();
+<<<<<<< HEAD
     private Player player;
 
     /* ===================== COMPONENTES UI (FXML) ===================== */
+=======
+    private JugadorHumano jugadorHumano;
+    /* ===================== UI ===================== */
+>>>>>>> origin/main
 
     @FXML private GridPane playerBoardGrid;
     @FXML private Pane shipsLayer;
@@ -326,7 +331,7 @@ public class SetupController implements Initializable {
 
         GameController controller = gameView.getGameController();
 
-        controller.setPlayer(player);
+        controller.setPlayer(jugadorHumano);
         controller.setInitialBoard(model.getFinalBoard());
 
         SetupView.getInstance().close();
@@ -334,7 +339,7 @@ public class SetupController implements Initializable {
 
     /* ===================== CONFIGURACIÓN DEL JUGADOR ===================== */
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setPlayer(JugadorHumano jugadorHumano) {
+        this.jugadorHumano = jugadorHumano;
     }
 }

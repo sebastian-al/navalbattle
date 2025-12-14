@@ -1,6 +1,6 @@
 package com.example.navalbattle1.Controller;
 
-import com.example.navalbattle1.Model.Player;
+import com.example.navalbattle1.Model.JugadorHumano;
 import com.example.navalbattle1.View.HelloView;
 import com.example.navalbattle1.View.SetupView;
 import javafx.event.ActionEvent;
@@ -41,13 +41,13 @@ public class HelloController {
             return;
         }
 
-        Player player = new Player();
-        player.setNickname(nickname);
+        JugadorHumano jugadorHumano = new JugadorHumano();
+        jugadorHumano.setNombre(nickname);
 
         // Abrir SETUP VIEW (segunda vista)
         SetupView setupView = SetupView.getInstance();
         setupView.show();
-        setupView.getController().setPlayer(player);
+        setupView.getController().setPlayer(jugadorHumano);
 
         // Cerrar HelloView
         Node source = (Node) event.getSource();

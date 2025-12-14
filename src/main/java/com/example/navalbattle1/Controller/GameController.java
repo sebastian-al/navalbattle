@@ -1,6 +1,6 @@
 package com.example.navalbattle1.Controller;
 
-import com.example.navalbattle1.Model.Player;
+import com.example.navalbattle1.Model.JugadorHumano;
 import com.example.navalbattle1.Model.Tablero;
 import com.example.navalbattle1.Model.Barco;
 import com.example.navalbattle1.View.BoardCell;
@@ -44,8 +44,7 @@ public class GameController implements Initializable {
     private static final int GRID_PADDING = 5;
 
     /* ===================== MODELO ===================== */
-
-    private Player player;
+    private JugadorHumano jugadorHumano;
     private Tablero playerFinalBoard; // viene desde Setup
     private Tablero enemyBoard; // tablero con barcos enemigos
     private final Random random = new Random();
@@ -342,6 +341,7 @@ public class GameController implements Initializable {
 
     /* ===================== JUGADOR ===================== */
 
+<<<<<<< HEAD
     /**
      * Establece el jugador actual.
      *
@@ -352,5 +352,10 @@ public class GameController implements Initializable {
         if (playerNameLabel != null) {
             playerNameLabel.setText("Jugador: " + player.getNickname());
         }
+=======
+    public void setPlayer(JugadorHumano jugador) {
+        jugadorHumano = jugador;
+        playerNameLabel.setText("Jugador: " + jugador.getNombre());
+>>>>>>> origin/main
     }
 }
