@@ -7,6 +7,10 @@ import com.example.navalbattle1.View.BoardCell;
 import com.example.navalbattle1.View.GameView;
 import com.example.navalbattle1.View.SetupView;
 import com.example.navalbattle1.View.ShipView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -148,6 +152,7 @@ public class SetupController implements Initializable {
         playerBoardGrid.setFocusTraversable(true);
     }
 
+
     /* ===================== CONTINUAR ===================== */
 
     @FXML
@@ -170,5 +175,83 @@ public class SetupController implements Initializable {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+
+    /*private void openEnemyFleet() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/navalbattle1/view/enemy-fleet-view.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Flota Enemiga");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    @FXML
+    private void openEnemyFleet() {
+        System.out.println("👉 Botón Flota Enemiga presionado");
+    }
+    @FXML
+    private void openEnemyFleet() {
+        try {
+            System.out.println("👉 Botón Flota Enemiga presionado");
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/navalbattle1/view/enemy-fleet-view.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Flota Enemiga");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+            System.out.println("✅ Ventana Flota Enemiga abierta");
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al abrir Flota Enemiga");
+            e.printStackTrace();
+        }
+    }*/
+
+    @FXML
+    private void openEnemyFleet() {
+        try {
+            System.out.println("👉 Botón Flota Enemiga presionado");
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/navalbattle1/enemy-fleet-view.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Flota Enemiga");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+            System.out.println("✅ Ventana Flota Enemiga abierta");
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al abrir Flota Enemiga");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 }
+
 

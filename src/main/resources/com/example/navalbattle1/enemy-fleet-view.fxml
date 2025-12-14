@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.navalbattle1.Controller.EnemyFleetController"
+            prefWidth="500"
+            prefHeight="550"
+            style="-fx-background-color: #0d1b2a;">
+
+    <top>
+        <Label text="Flota Enemiga"
+               BorderPane.alignment="CENTER"
+               textFill="#FFD700"
+               style="-fx-padding: 20;">
+            <font>
+                <Font name="System Bold" size="20"/>
+            </font>
+        </Label>
+    </top>
+
+    <center>
+        <GridPane fx:id="enemyGrid"
+                  hgap="2"
+                  vgap="2"
+                  alignment="CENTER"/>
+    </center>
+
+    <bottom>
+        <Button text="⬅ Volver"
+                onAction="#handleBack"
+                BorderPane.alignment="CENTER"
+                style="-fx-padding: 10; -fx-margin: 20;"/>
+    </bottom>
+
+</BorderPane>
+
