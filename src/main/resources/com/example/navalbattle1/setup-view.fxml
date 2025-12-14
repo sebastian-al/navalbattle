@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.navalbattle1.Controller.SetupController"
+            prefWidth="1200"
+            prefHeight="800"
+            style="-fx-background-color: #0d1b2a;">
+
+    <!-- ================= HEADER ================= -->
+    <top>
+        <VBox style="-fx-background-color: linear-gradient(to right, #1b263b, #415a77);">
+            <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20;">
+                <Label text="⚓ BATALLA NAVAL" textFill="#FFD700">
+                    <font>
+                        <Font name="System Bold" size="26"/>
+                    </font>
+                </Label>
+                <Label text="— Colocación de la flota" textFill="#B0BEC5">
+                    <font>
+                        <Font size="16"/>
+                    </font>
+                </Label>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ================= CENTER ================= -->
+    <center>
+        <HBox spacing="40"
+              alignment="CENTER"
+              style="-fx-padding: 30;">
+
+            <!-- ===== PANEL FLOTA ===== -->
+            <VBox spacing="15"
+                  prefWidth="260"
+                  style="-fx-background-color: rgba(255,255,255,0.05);
+                         -fx-background-radius: 15;
+                         -fx-padding: 20;">
+
+                <Label text="🚢 Flota disponible" textFill="#FFD700">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+
+                <Label fx:id="carrierLabel"
+                       text="Portaaviones (4)  x1"
+                       textFill="WHITE"
+                       onMouseClicked="#selectCarrier"
+                       style="-fx-cursor: hand;"/>
+
+                <Label fx:id="submarineLabel"
+                       text="Submarino (3)     x2"
+                       textFill="WHITE"
+                       onMouseClicked="#selectSubmarine"
+                       style="-fx-cursor: hand;"/>
+
+                <Label fx:id="destroyerLabel"
+                       text="Destructor (2)    x3"
+                       textFill="WHITE"
+                       onMouseClicked="#selectDestroyer"
+                       style="-fx-cursor: hand;"/>
+
+                <Label fx:id="frigateLabel"
+                       text="Fragata (1)       x4"
+                       textFill="WHITE"
+                       onMouseClicked="#selectFrigate"
+                       style="-fx-cursor: hand;"/>
+
+                <Separator/>
+
+                <Label text="🔄 Presiona R para rotar"
+                       textFill="#B0BEC5">
+                    <font>
+                        <Font size="12"/>
+                    </font>
+                </Label>
+            </VBox>
+
+            <!-- ===== TABLERO JUGADOR ===== -->
+            <VBox alignment="TOP_CENTER"
+                  spacing="15"
+                  style="-fx-background-color: rgba(26, 58, 82, 0.5);
+                         -fx-background-radius: 15;
+                         -fx-padding: 20;">
+
+                <Label text="🛡️ TU TERRITORIO"
+                       textFill="#87CEEB">
+                    <font>
+                        <Font name="System Bold" size="20"/>
+                    </font>
+                </Label>
+
+                <Label text="Selecciona un barco y colócalo en el tablero"
+                       textFill="#B0BEC5">
+                    <font>
+                        <Font size="12"/>
+                    </font>
+                </Label>
+
+                <!-- STACKPANE: AGUA + BARCOS -->
+                <StackPane prefWidth="360"
+                           prefHeight="360"
+                           alignment="TOP_LEFT">
+
+                    <!-- Grid base -->
+                    <GridPane fx:id="playerBoardGrid"
+                              hgap="2"
+                              vgap="2"
+                              prefWidth="360"
+                              prefHeight="360"
+                              style="-fx-background-color: black;
+                                     -fx-padding: 5;"/>
+
+                    <!-- Capa de barcos (NO bloquea clics) -->
+                    <Pane fx:id="shipsLayer"
+                          mouseTransparent="true"
+                          pickOnBounds="false"/>
+                </StackPane>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- ================= FOOTER ================= -->
+    <bottom>
+        <HBox alignment="CENTER"
+              spacing="30"
+              style="-fx-padding: 20;
+                     -fx-background-color: rgba(0,0,0,0.3);">
+
+            <!-- AYUDA -->
+            <Button fx:id="helpButton"
+                    text="❓ Ayuda"
+                    focusTraversable="false"/>
+
+            <!-- CONTINUAR -->
+            <Button fx:id="continueButton"
+                    text="➡ Ir al tablero enemigo"
+                    onAction="#handleContinue"
+                    disable="true"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
