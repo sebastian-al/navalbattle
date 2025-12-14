@@ -1,6 +1,6 @@
 package com.example.navalbattle1.Controller;
 
-import com.example.navalbattle1.Model.Player;
+import com.example.navalbattle1.Model.JugadorHumano;
 import com.example.navalbattle1.Model.Tablero;
 import com.example.navalbattle1.Model.Barco;
 import com.example.navalbattle1.View.BoardCell;
@@ -25,8 +25,7 @@ public class GameController implements Initializable {
     private static final int GRID_PADDING = 5;
 
     /* ===================== MODELO ===================== */
-
-    private Player player;
+    private JugadorHumano jugadorHumano;
     private Tablero playerFinalBoard; // viene desde Setup
 
     /* ===================== UI ===================== */
@@ -160,8 +159,8 @@ public class GameController implements Initializable {
 
     /* ===================== JUGADOR ===================== */
 
-    public void setPlayer(Player player) {
-        this.player = player;
-        playerNameLabel.setText("Jugador: " + player.getNickname());
+    public void setPlayer(JugadorHumano jugador) {
+        jugadorHumano = jugador;
+        playerNameLabel.setText("Jugador: " + jugador.getNombre());
     }
 }

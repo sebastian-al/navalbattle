@@ -14,7 +14,7 @@ public class JugadorHumano implements Jugador {
     }
 
     @Override
-    public String getNombre() { return "Jugador Humano"; }
+    public String getNombre() { return nombre; }
 
     public void setNombre(String auxNombre){
         this.nombre = auxNombre;
