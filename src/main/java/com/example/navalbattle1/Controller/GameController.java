@@ -13,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
-
+import com.example.navalbattle1.util.CSVLogger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -346,6 +346,8 @@ public class GameController implements Initializable {
             }
         } else {
             cell.setMiss();
+            CSVLogger.log(row, col, "MISS");
+
             turnLabel.setText("❌ Agua — Turno de la máquina");
             isPlayerTurn = false;
 
@@ -508,4 +510,11 @@ public class GameController implements Initializable {
             playerNameLabel.setText("Jugador: " + player.getNickname());
         }
     }
+
+
+
+
+
+
+
 }

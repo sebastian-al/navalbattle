@@ -13,7 +13,7 @@ package com.example.navalbattle1.Model;
  * <p>La clase utiliza el patrón de diseño <b>Builder</b> para su construcción,
  * lo que permite crear barcos de manera flexible y legible.</p>
  *
- * <h3>Ejemplo de uso:</h3>
+ * <h2>Ejemplo de uso:</h2>
  * <pre>
  * Barco portaaviones = new Barco.Builder("Portaaviones", 4)
  *     .fila(0)
@@ -207,7 +207,7 @@ public class Barco {
      *   <li>Proporcionar valores por defecto opcionales</li>
      * </ul>
      *
-     * <h3>Ejemplo de uso:</h3>
+     * <h2>Ejemplo de uso:</h2>
      * <pre>
      * Barco destructor = new Barco.Builder("Destructor", 2)
      *     .fila(3)

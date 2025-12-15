@@ -1,3 +1,4 @@
+/** Esta clase se usa para manejar los tableros del jugador y enemigo */
 package com.example.navalbattle1.Controller;
 
 import com.example.navalbattle1.Model.JugadorHumano;
