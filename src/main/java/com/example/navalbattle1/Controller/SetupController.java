@@ -3,6 +3,7 @@ package com.example.navalbattle1.Controller;
 import com.example.navalbattle1.Model.JugadorHumano;
 import com.example.navalbattle1.Model.SetupModel;
 import com.example.navalbattle1.Model.SetupModel.ShipType;
+import com.example.navalbattle1.Model.Tablero;
 import com.example.navalbattle1.View.BoardCell;
 import com.example.navalbattle1.View.GameView;
 import com.example.navalbattle1.View.SetupView;
@@ -14,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,21 +22,7 @@ import java.util.ResourceBundle;
 
 /**
  * Controlador para la vista de configuración de la flota en el juego de Batalla Naval.
- *
- * <p>Este controlador gestiona la interfaz de usuario donde los jugadores colocan sus barcos
- * en el tablero antes de iniciar el juego. Proporciona funcionalidades para:</p>
- * <ul>
- *   <li>Crear y mostrar el tablero de juego de 10x10 celdas</li>
- *   <li>Seleccionar diferentes tipos de barcos de la flota disponible</li>
- *   <li>Arrastrar y soltar barcos en el tablero usando el mouse</li>
- *   <li>Cambiar la orientación de los barcos (horizontal/vertical) con un botón</li>
- *   <li>Reubicar barcos ya colocados arrastrándolos nuevamente</li>
- *   <li>Validar la colocación de barcos según las reglas del juego</li>
- *   <li>Continuar al juego una vez que todos los barcos estén colocados</li>
- * </ul>
- *
- * @author Tu Nombre
- * @version 2.0
+ * Los barcos se colocan directamente en el GridPane.
  */
 public class SetupController implements Initializable {
 
@@ -45,22 +31,15 @@ public class SetupController implements Initializable {
     private static final int BOARD_SIZE = 10;
     private static final int CELL_SIZE = BoardCell.SIZE;
     private static final int GAP = 2;
-    private static final int GRID_PADDING = 5;
 
     /* ===================== MODELO ===================== */
 
     private final SetupModel model = new SetupModel();
-<<<<<<< HEAD
-    private Player player;
+    private JugadorHumano jugadorHumano;
 
     /* ===================== COMPONENTES UI (FXML) ===================== */
-=======
-    private JugadorHumano jugadorHumano;
-    /* ===================== UI ===================== */
->>>>>>> origin/main
 
     @FXML private GridPane playerBoardGrid;
-    @FXML private Pane shipsLayer;
 
     @FXML private Label carrierLabel;
     @FXML private Label submarineLabel;
@@ -77,8 +56,7 @@ public class SetupController implements Initializable {
     private ShipType selectedShip = null;
     private ShipView.Orientation orientation = ShipView.Orientation.HORIZONTAL;
     private BoardCell[][] boardCells;
-
-    private ShipView draggedShip = null;
+    private ShipView previewShip = null;
 
     /* ===================== INICIALIZACIÓN ===================== */
 
@@ -88,6 +66,11 @@ public class SetupController implements Initializable {
         updateFleetLabels();
         updateOrientationButton();
         continueButton.setDisable(true);
+
+        // Inicializar jugador humano si no existe
+        if (jugadorHumano == null) {
+            jugadorHumano = new JugadorHumano("Jugador 1");
+        }
     }
 
     /* ===================== CREACIÓN DEL TABLERO ===================== */
@@ -95,6 +78,10 @@ public class SetupController implements Initializable {
     private void createBoard() {
         boardCells = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         playerBoardGrid.getChildren().clear();
+
+        // Configurar el GridPane
+        playerBoardGrid.setHgap(GAP);
+        playerBoardGrid.setVgap(GAP);
 
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
@@ -104,9 +91,15 @@ public class SetupController implements Initializable {
                 final int r = row;
                 final int c = col;
 
-                cell.setOnMouseReleased(e -> {
-                    if (draggedShip != null) {
-                        dropShip(r, c);
+                cell.setOnMouseClicked(e -> {
+                    if (selectedShip != null) {
+                        placeShip(r, c);
+                    }
+                });
+
+                cell.setOnMouseEntered(e -> {
+                    if (selectedShip != null) {
+                        highlightPlacement(r, c);
                     }
                 });
 
@@ -114,6 +107,8 @@ public class SetupController implements Initializable {
                 playerBoardGrid.add(cell, col, row);
             }
         }
+
+        playerBoardGrid.setOnMouseExited(e -> clearHighlights());
     }
 
     /* ===================== SELECCIÓN DE BARCOS ===================== */
@@ -121,70 +116,88 @@ public class SetupController implements Initializable {
     @FXML
     private void selectCarrier() {
         if (model.hasRemaining(ShipType.CARRIER)) {
-            startDraggingShip(ShipType.CARRIER);
+            selectedShip = ShipType.CARRIER;
+            updateShipSelection();
         }
     }
 
     @FXML
     private void selectSubmarine() {
         if (model.hasRemaining(ShipType.SUBMARINE)) {
-            startDraggingShip(ShipType.SUBMARINE);
+            selectedShip = ShipType.SUBMARINE;
+            updateShipSelection();
         }
     }
 
     @FXML
     private void selectDestroyer() {
         if (model.hasRemaining(ShipType.DESTROYER)) {
-            startDraggingShip(ShipType.DESTROYER);
+            selectedShip = ShipType.DESTROYER;
+            updateShipSelection();
         }
     }
 
     @FXML
     private void selectFrigate() {
         if (model.hasRemaining(ShipType.FRIGATE)) {
-            startDraggingShip(ShipType.FRIGATE);
+            selectedShip = ShipType.FRIGATE;
+            updateShipSelection();
         }
     }
 
-    /* ===================== SISTEMA DE ARRASTRE ===================== */
+    private void updateShipSelection() {
+        carrierLabel.setStyle(selectedShip == ShipType.CARRIER ?
+                "-fx-background-color: #4ade80; -fx-text-fill: white; -fx-padding: 5;" : "");
+        submarineLabel.setStyle(selectedShip == ShipType.SUBMARINE ?
+                "-fx-background-color: #4ade80; -fx-text-fill: white; -fx-padding: 5;" : "");
+        destroyerLabel.setStyle(selectedShip == ShipType.DESTROYER ?
+                "-fx-background-color: #4ade80; -fx-text-fill: white; -fx-padding: 5;" : "");
+        frigateLabel.setStyle(selectedShip == ShipType.FRIGATE ?
+                "-fx-background-color: #4ade80; -fx-text-fill: white; -fx-padding: 5;" : "");
+    }
 
-    private void startDraggingShip(ShipType shipType) {
-        selectedShip = shipType;
+    /* ===================== COLOCACIÓN DE BARCOS ===================== */
 
-        draggedShip = new ShipView(
-                ShipView.Type.valueOf(shipType.name()),
+    private void placeShip(int row, int col) {
+        if (selectedShip == null) return;
+
+        boolean horizontal = (orientation == ShipView.Orientation.HORIZONTAL);
+        boolean canPlace = model.placeShip(selectedShip, row, col, horizontal);
+
+        if (!canPlace) {
+            clearHighlights();
+            return;
+        }
+
+        // Crear el barco completo
+        ShipView ship = new ShipView(
+                ShipView.Type.fromSize(selectedShip.getSize()),
                 orientation
         );
 
-        draggedShip.setOpacity(0.7);
-        draggedShip.setMouseTransparent(true);
+        // Calcular la posición en el GridPane y añadirlo directamente
+        int size = selectedShip.getSize();
+        int columnSpan = horizontal ? size : 1;
+        int rowSpan = horizontal ? 1 : size;
 
-        shipsLayer.getChildren().add(draggedShip);
-        setupDragHandlers();
-    }
+        // Añadir el barco al GridPane en la posición correcta
+        playerBoardGrid.add(ship, col, row, columnSpan, rowSpan);
 
-    private void setupDragHandlers() {
-        playerBoardGrid.setOnMouseMoved(e -> {
-            if (draggedShip != null) {
-                double x = e.getX();
-                double y = e.getY();
-                draggedShip.setLayoutX(x - draggedShip.getWidth() / 2);
-                draggedShip.setLayoutY(y - draggedShip.getHeight() / 2);
+        // Marcar las celdas como ocupadas por el barco
+        for (int i = 0; i < size; i++) {
+            int r = horizontal ? row : row + i;
+            int c = horizontal ? col + i : col;
+            boardCells[r][c].setShipReference(ship);
+        }
 
-                updateHighlightFromMousePosition(x, y);
-            }
-        });
+        selectedShip = null;
+        clearHighlights();
+        updateFleetLabels();
+        updateShipSelection();
 
-        playerBoardGrid.setOnMouseDragged(e -> {
-            if (draggedShip != null) {
-                double x = e.getX();
-                double y = e.getY();
-                draggedShip.setLayoutX(x - draggedShip.getWidth() / 2);
-                draggedShip.setLayoutY(y - draggedShip.getHeight() / 2);
-
-                updateHighlightFromMousePosition(x, y);
-            }
-        });
+        if (model.isFleetComplete()) {
+            continueButton.setDisable(false);
+        }
     }
 
     private void highlightPlacement(int row, int col) {
@@ -201,80 +214,17 @@ public class SetupController implements Initializable {
             int r = horizontal ? row : row + i;
             int c = horizontal ? col + i : col;
 
-            if (r < BOARD_SIZE && c < BOARD_SIZE && r >= 0 && c >= 0) {
-                if (isValid) {
-                    boardCells[r][c].setStyle("-fx-background-color: rgba(0, 255, 0, 0.5); -fx-border-color: #1a3a52; -fx-border-width: 1;");
-                } else {
-                    boardCells[r][c].setStyle("-fx-background-color: rgba(255, 0, 0, 0.5); -fx-border-color: #1a3a52; -fx-border-width: 1;");
-                }
+            if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
+                boardCells[r][c].setHighlight(isValid);
             }
-        }
-    }
-
-    private void updateHighlightFromMousePosition(double mouseX, double mouseY) {
-        int col = (int) ((mouseX - GRID_PADDING) / (CELL_SIZE + GAP));
-        int row = (int) ((mouseY - GRID_PADDING) / (CELL_SIZE + GAP));
-
-        if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE) {
-            highlightPlacement(row, col);
-        } else {
-            clearHighlights();
         }
     }
 
     private void clearHighlights() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                // Restaurar el estilo original de la celda
-                boardCells[i][j].setStyle("");
-                boardCells[i][j].setWater(); // Restaurar el color de agua
+                boardCells[i][j].clearHighlight();
             }
-        }
-    }
-
-    private void dropShip(int row, int col) {
-        if (selectedShip == null || draggedShip == null) return;
-
-        boolean horizontal = (orientation == ShipView.Orientation.HORIZONTAL);
-        boolean canPlace = model.placeShip(selectedShip, row, col, horizontal);
-
-        if (!canPlace) {
-            // Colocación inválida - remover el barco arrastrado
-            shipsLayer.getChildren().remove(draggedShip);
-
-            draggedShip = null;
-            selectedShip = null;
-            clearHighlights();
-
-            playerBoardGrid.setOnMouseMoved(null);
-            playerBoardGrid.setOnMouseDragged(null);
-            return;
-        }
-
-        // Colocación válida - posicionar el barco
-        double x = GRID_PADDING + col * (CELL_SIZE + GAP);
-        double y = GRID_PADDING + row * (CELL_SIZE + GAP);
-
-        draggedShip.setLayoutX(x);
-        draggedShip.setLayoutY(y);
-        draggedShip.setOpacity(1.0);
-
-        // IMPORTANTE: El barco colocado DEBE permanecer mouseTransparent=true
-        // para que no bloquee los clics en las celdas
-        draggedShip.setMouseTransparent(true);
-
-        // Limpiar estado
-        draggedShip = null;
-        selectedShip = null;
-        clearHighlights();
-
-        playerBoardGrid.setOnMouseMoved(null);
-        playerBoardGrid.setOnMouseDragged(null);
-
-        updateFleetLabels();
-
-        if (model.isFleetComplete()) {
-            continueButton.setDisable(false);
         }
     }
 
@@ -287,22 +237,14 @@ public class SetupController implements Initializable {
                 : ShipView.Orientation.HORIZONTAL;
 
         updateOrientationButton();
-
-        if (draggedShip != null && selectedShip != null) {
-            shipsLayer.getChildren().remove(draggedShip);
-
-            playerBoardGrid.setOnMouseMoved(null);
-            playerBoardGrid.setOnMouseDragged(null);
-
-            startDraggingShip(selectedShip);
-        }
+        clearHighlights();
     }
 
     private void updateOrientationButton() {
         if (rotateButton != null) {
             String orientationText = (orientation == ShipView.Orientation.HORIZONTAL)
-                    ? "Horizontal"
-                    : "Vertical";
+                    ? "Horizontal ↔"
+                    : "Vertical ↕";
             rotateButton.setText("Orientación: " + orientationText);
         }
     }
@@ -326,20 +268,42 @@ public class SetupController implements Initializable {
 
     @FXML
     private void handleContinue() throws IOException {
-        GameView gameView = GameView.getInstance();
-        gameView.show();
+        try {
+            // Obtener el tablero final del modelo
+            Tablero tableroFinal = model.getFinalBoard();
 
-        GameController controller = gameView.getGameController();
+            // Transferir al jugador
+            if (jugadorHumano != null && tableroFinal != null) {
+                int[][] celdas = tableroFinal.getCeldas();
+                jugadorHumano.setTablero(celdas);
+            }
 
-        controller.setPlayer(jugadorHumano);
-        controller.setInitialBoard(model.getFinalBoard());
+            GameView gameView = GameView.getInstance();
+            gameView.show();
 
-        SetupView.getInstance().close();
+            GameController controller = gameView.getGameController();
+
+            if (controller != null) {
+                controller.setPlayer(jugadorHumano);
+                controller.setInitialBoard(tableroFinal);
+            }
+
+            SetupView.getInstance().close();
+
+        } catch (Exception e) {
+            System.err.println("Error al continuar al juego: " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Error al iniciar el juego", e);
+        }
     }
 
     /* ===================== CONFIGURACIÓN DEL JUGADOR ===================== */
 
     public void setPlayer(JugadorHumano jugadorHumano) {
         this.jugadorHumano = jugadorHumano;
+    }
+
+    public JugadorHumano getPlayer() {
+        return jugadorHumano;
     }
 }

@@ -1,138 +1,201 @@
 package com.example.navalbattle1.View;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
+/**
+ * Representa una celda individual del tablero de Batalla Naval.
+ * Puede contener agua, parte de un barco, y marcas de disparo.
+ * Usa StackPane para superponer: fondo -> barco -> marca de disparo
+ */
 public class BoardCell extends StackPane {
 
-    public static final int SIZE = 35;
+    public static final int SIZE = 32;
 
     private final int row;
     private final int col;
+    private final Rectangle background;
+    private ShipView shipView = null; // Referencia al barco completo
+    private boolean shot = false;
+    private CellState state = CellState.WATER;
+    private Text hitMarker;
+    private Circle missMarker;
 
-    /* ===================== ESTADO ===================== */
-
-    private boolean shot = false; // ← CLAVE para el GameController
-
-    /* ===================== CONSTRUCTOR ===================== */
+    public enum CellState {
+        WATER,      // Agua (celda vacía)
+        SHIP,       // Contiene parte de un barco
+        MISS,       // Disparo fallido
+        HIT,        // Disparo acertado
+        SUNK        // Barco hundido
+    }
 
     public BoardCell(int row, int col) {
         this.row = row;
         this.col = col;
 
         setPrefSize(SIZE, SIZE);
-        setMinSize(SIZE, SIZE);
         setMaxSize(SIZE, SIZE);
+        setMinSize(SIZE, SIZE);
 
-        setAlignment(Pos.CENTER);
+        background = new Rectangle(SIZE, SIZE);
+        background.setFill(Color.web("#2c5f7c"));
+        background.setStroke(Color.web("#1a3a52"));
+        background.setStrokeWidth(1);
 
-        setStyle("""
-            -fx-background-color: #1e3d59;
-            -fx-border-color: black;
-            -fx-border-width: 1;
-        """);
+        getChildren().add(background);
     }
 
-    /* ===================== CONSULTA DE ESTADO ===================== */
+    /**
+     * Asocia esta celda con un barco completo (para referencia).
+     * El barco se dibuja en el GridPane, no dentro de esta celda individual.
+     */
+    public void setShipReference(ShipView ship) {
+        this.shipView = ship;
+        this.state = CellState.SHIP;
+    }
 
+    /**
+     * Verifica si esta celda es parte de un barco.
+     */
+    public boolean hasShip() {
+        return shipView != null;
+    }
+
+    /**
+     * Establece esta celda como agua (vacía).
+     */
+    public void setWater() {
+        state = CellState.WATER;
+        background.setFill(Color.web("#2c5f7c"));
+        shot = false;
+        removeMarkers();
+    }
+
+    /**
+     * Marca esta celda como disparo fallido (agua).
+     */
+    public void setMiss() {
+        state = CellState.MISS;
+        background.setFill(Color.web("#4a7c9e"));
+        shot = true;
+
+        removeMarkers();
+
+        // Añadir círculo blanco ENCIMA de todo
+        missMarker = new Circle(SIZE / 2, SIZE / 2, 4);
+        missMarker.setFill(Color.WHITE);
+        missMarker.setStroke(Color.LIGHTGRAY);
+        missMarker.setStrokeWidth(1);
+        getChildren().add(missMarker);
+    }
+
+    /**
+     * Marca esta celda como impacto en barco.
+     * La X aparece ENCIMA del barco.
+     */
+    public void setHit() {
+        state = CellState.HIT;
+        background.setFill(Color.web("#d94a3d"));
+        shot = true;
+
+        removeMarkers();
+
+        // La X se dibuja ENCIMA del barco
+        hitMarker = new Text("✗");
+        hitMarker.setFont(Font.font("Arial", FontWeight.BOLD, 28));
+        hitMarker.setFill(Color.RED);
+        hitMarker.setStroke(Color.DARKRED);
+        hitMarker.setStrokeWidth(2);
+
+        // Asegurar que esté visible encima de todo
+        getChildren().add(hitMarker);
+    }
+
+    /**
+     * Marca esta celda como parte de un barco hundido.
+     * La calavera aparece ENCIMA del barco.
+     */
+    public void setSunk() {
+        state = CellState.SUNK;
+        background.setFill(Color.web("#8b0000"));
+        shot = true;
+
+        removeMarkers();
+
+        hitMarker = new Text("💀");
+        hitMarker.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+
+        // Asegurar que esté visible encima de todo
+        getChildren().add(hitMarker);
+    }
+
+    /**
+     * Remueve todas las marcas de disparo.
+     */
+    private void removeMarkers() {
+        if (hitMarker != null) {
+            getChildren().remove(hitMarker);
+            hitMarker = null;
+        }
+        if (missMarker != null) {
+            getChildren().remove(missMarker);
+            missMarker = null;
+        }
+    }
+
+    /**
+     * Verifica si ya se disparó a esta celda.
+     */
     public boolean isShot() {
         return shot;
     }
 
-    private void markShot() {
-        this.shot = true;
+    /**
+     * Obtiene el estado actual de la celda.
+     */
+    public CellState getState() {
+        return state;
     }
 
-    /* ===================== ESTADO BASE ===================== */
-
-    public void setWater() {
-        getChildren().clear();
-        shot = false;
-
-        setStyle("""
-            -fx-background-color: #1e3d59;
-            -fx-border-color: black;
-            -fx-border-width: 1;
-        """);
-    }
-
-    /* ===================== DISPAROS (TABLERO ENEMIGO) ===================== */
-
-    // ❌ Agua
-    public void setMiss() {
-        markShot();
-        getChildren().clear();
-
-        Label miss = new Label("✖");
-        miss.setFont(Font.font(18));
-        miss.setTextFill(Color.LIGHTBLUE);
-
-        getChildren().add(miss);
-    }
-
-    // 💣 Tocado
-    public void setHit() {
-        markShot();
-        getChildren().clear();
-
-        Label hit = new Label("💣");
-        hit.setFont(Font.font(18));
-
-        getChildren().add(hit);
-    }
-
-    // 🔥 Hundido
-    public void setSunk() {
-        markShot();
-        getChildren().clear();
-
-        Label fire = new Label("🔥");
-        fire.setFont(Font.font(18));
-
-        getChildren().add(fire);
-    }
-
-    /* ===================== BARCOS (SOLO VISUAL LOCAL) ===================== */
-    // ⚠️ Estos métodos NO se usan en el tablero enemigo
-
-    public void setCarrier() {
-        drawShip(Color.DARKGRAY, 28, 28);
-    }
-
-    public void setSubmarine() {
-        drawShip(Color.DARKSEAGREEN, 26, 16);
-    }
-
-    public void setDestroyer() {
-        drawShip(Color.LIGHTGRAY, 26, 14);
-    }
-
-    public void setFrigate() {
-        drawShip(Color.LIGHTBLUE, 18, 18);
-    }
-
-    private void drawShip(Color color, double w, double h) {
-        getChildren().clear();
-
-        Rectangle body = new Rectangle(w, h);
-        body.setFill(color);
-        body.setArcWidth(6);
-        body.setArcHeight(6);
-
-        getChildren().add(body);
-    }
-
-    /* ===================== COORDENADAS ===================== */
-
+    /**
+     * Obtiene la fila de esta celda.
+     */
     public int getRow() {
         return row;
     }
 
+    /**
+     * Obtiene la columna de esta celda.
+     */
     public int getCol() {
         return col;
+    }
+
+    /**
+     * Resalta la celda con un color específico (para preview de colocación).
+     */
+    public void setHighlight(boolean valid) {
+        if (valid) {
+            background.setFill(Color.web("#4ade80", 0.5));
+        } else {
+            background.setFill(Color.web("#f87171", 0.5));
+        }
+    }
+
+    /**
+     * Limpia cualquier resaltado y restaura el color según el estado.
+     */
+    public void clearHighlight() {
+        switch (state) {
+            case WATER, SHIP -> background.setFill(Color.web("#2c5f7c"));
+            case MISS -> background.setFill(Color.web("#4a7c9e"));
+            case HIT -> background.setFill(Color.web("#d94a3d"));
+            case SUNK -> background.setFill(Color.web("#8b0000"));
+        }
     }
 }
