@@ -33,3 +33,15 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Logs de errores JVM
+hs_err_pid*.log
+replay_pid*.log
+
+# Logs CSV generados en ejecución (si no son parte de la entrega)
+enemy_board_log.csv
+
+# Archivos del sistema
+.idea/
+target/
+*.class
